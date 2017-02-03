@@ -53,6 +53,7 @@ source_steering_angles = np.array(source_steering_angles)
 print("number of training samples: {}".format(source_image_names.shape[0]))
 
 
+# this function is copied from this student submission https://github.com/ksakmann/CarND-BehavioralCloning/blob/master/model.py
 def random_shear(image, steering, shear_range):
     rows, cols, ch = image.shape
     dx = np.random.randint(-shear_range, shear_range + 1)
