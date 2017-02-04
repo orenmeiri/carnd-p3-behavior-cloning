@@ -45,7 +45,12 @@ I have used Udacity set of 8K samples.  I have not recorded my own training data
 
 I have resized the original images (160 x 320) to (80, 160) to ease network training time and get it closer to Nvidia input size (66 x 200). I believe the network architecture is optimized to this image input size.
 
-See imageX_before.jpg and imageX_after.jpg for example augmented samples
+Examples of Augmented Images
+----------------------------
+
+Please see files with these format for example augmented images:
+imageX_before.jpg
+imageX_after.jpg
 
 Training Approach
 -----------------
