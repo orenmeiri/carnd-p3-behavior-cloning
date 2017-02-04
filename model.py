@@ -10,6 +10,8 @@ import csv
 import scipy.ndimage
 import scipy.misc
 import tensorflow as tf
+from PIL import Image
+from PIL import ImageEnhance
 from keras.layers import Convolution2D, MaxPooling2D, Dropout
 from numpy.core.defchararray import lstrip
 from sklearn.utils import shuffle
@@ -73,12 +75,11 @@ def random_shear(image, steering, shear_range):
 #     return image, steering_angle + random_roll / 400
 
 def augment_brightness_camera_images(image):
-    image1 = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
-    random_bright = .25+np.random.uniform()
-    image1[:,:,2] = image1[:,:,2]*random_bright
-    image1 = cv2.cvtColor(image1,cv2.COLOR_HSV2RGB)
-    return image1
+    enhancer = ImageEnhance.Brightness(Image.fromarray(image))
+    img_enhanced = enhancer.enhance(0.5)
+    return np.array(img_enhanced)
 
+# saved_image_index = 0
 
 def sample_for_index(index):
     # print("index{}".format(index))
@@ -97,13 +98,20 @@ def augment_image(image, steering_angle):
     return image, steering_angle
 
 def generate_batch(batch_size):
+    # global saved_image_index
     while True:
         features = []
         results = []
         weights = []
         for i in range(len(source_image_names)):
             image, steering_angle = sample_for_index(i)
+            # should_save = i % 1000
+            # if should_save:
+            #     saved_image_index = saved_image_index + 1
+            #     scipy.misc.imsave("image{}_before.jpg".format(i), image)
             image, steering_angle = augment_image(image, steering_angle)
+            # if should_save:
+            #     scipy.misc.imsave("image{}_after.jpg".format(i), image)
             image = normalize_image(image)
             features.append(image)
             results.append(steering_angle)
@@ -154,10 +162,7 @@ model.add(Dense(1))
 import gc; gc.collect()
 
 def save_model(filename):
-    json_string = model.to_json()
-    with open(filename+".json", "w") as json_file:
-        json_file.write(json_string)
-    model.save_weights(filename+".h5")
+    model.save(filename+".h5")
 
 
 # generator = generate_image(files_prefix)
